@@ -91,6 +91,8 @@ objects:
     apiVersion: v1
     metadata:
       name: "${NAME}-volume"
+      labels:
+        app: "${NAME}"
     spec:
       accessModes:
       - ReadWriteOnce
@@ -166,6 +168,8 @@ objects:
         template.openshift.io/expose-root_password: '{.data[''database-root-password'']}'
         template.openshift.io/expose-username: '{.data[''database-user'']}'
       name: ${DATABASE_SERVICE_NAME}
+      labels:
+        app: "${NAME}"
     stringData:
       database-name: ${MYSQL_DATABASE}
       database-password: ${MYSQL_PASSWORD}
@@ -178,6 +182,8 @@ objects:
       annotations:
         template.openshift.io/expose-uri: mysql://{.spec.clusterIP}:{.spec.ports[?(.name=="mysql")].port}
       name: ${DATABASE_SERVICE_NAME}
+      labels:
+        app: "${NAME}"
     spec:
       ports:
       - name: mysql
@@ -189,6 +195,8 @@ objects:
     kind: PersistentVolumeClaim
     metadata:
       name: ${DATABASE_SERVICE_NAME}
+      labels:
+        app: "${NAME}"
     spec:
       accessModes:
       - ReadWriteOnce
@@ -202,6 +210,8 @@ objects:
       annotations:
         template.alpha.openshift.io/wait-for-ready: "true"
       name: ${DATABASE_SERVICE_NAME}
+      labels:
+        app: "${NAME}"
     spec:
       replicas: 1
       selector:
@@ -295,12 +305,12 @@ parameters:
     displayName: "Git Repository URL"
     description: "The URL of the repository with your application source code."
     required: true
-    value: "git@github.com:openshift-cs/wordpress-migration.git"
+    value: "https://github.com/openshift-cs/wordpress-migration.git"
 
   - name: "SOURCE_REPOSITORY_REF"
     displayName: "Git Reference"
     description: "Set this to a branch name, tag or other ref of your repository if you are not using the default branch."
-    value: 4.9.2
+    value: "migration"
 
   - name: "CONTEXT_DIR"
     displayName: "Context Directory"
